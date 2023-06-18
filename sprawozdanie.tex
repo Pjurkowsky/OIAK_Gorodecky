@@ -1,0 +1,93 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage[mathletters]{ucs}
+
+\usepackage{float}
+\usepackage[utf8x]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{titlesec}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amsmath}
+\renewcommand\*{\cdot}
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+\graphicspath{ {images/} }
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\begin{document}
+\title{Organizacja i Architektura komputerów}
+\author{Łukasz Wdowiak}
+\author{Damian Jabłoński}
+\input{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Cele projektu}
+
+\section{Przebieg projektu}
+
+\section{Algorytmy}
+\subsection{Modulo dla dowolnych X i P - bit po bicie}
+\subsubsection{Opis algorytmu}
+W artykule autorzy zaproponowali sposób obliczania oparty na następującej reprezentacji:
+\begin{align}
+    X & =P \cdot Q+R=                                                                                           \\
+      & =P \cdot 2^\delta \cdot q_\delta+P \cdot 2^{\delta-1} \cdot q_{\delta-1}+\ldots+P \cdot 2^0 \cdot q_0+R
+\end{align}
+
+
+$X(\bmod P)=R$, gdzie $X=\left(x_\psi, x_{\psi-1}, \ldots, x_1\right)$ i $\delta$ jest określona nierównościa $P \cdot 2^{\delta}<2^\psi-1 \leq P \cdot 2^{\delta+1}$.
+
+Na przykład, $X=\left(x_{10}, x_9, \ldots, x_1\right)$ i $P=21$, przy  $\delta=5$. Wynosi:
+$$
+    \begin{aligned}
+        X=21 \cdot Q+R & =                                                                         \\
+                       & =21 \cdot 2^5 \cdot q_5+21 \cdot 2^4 \cdot q_4+21 \cdot 2^3 \cdot q_3+    \\
+                       & +21 \cdot 2^2 \cdot q_2+21 \cdot 2^1 \cdot q_1+21 \cdot 2^0 \cdot q_0+R .
+    \end{aligned}
+$$
+
+Każdy kolejny iloczyn częściowy jest wejściem kolejnego bloku obliczeniowego. R jest wynikiem szóstego bloku oraz resztą z dzielenia przez 21.
+Jeśli chcemy policzyć $X(\bmod P)=R$, gdzie $X = 888$, a $P = 21$, to:
+$$
+    \begin{aligned}
+         & \text { } X_5 \geq 21 \cdot 2^5 \text {, } 888 \geq 672 \text {,  } X_4=888-21 \cdot 2^5=216 \text {; } \\
+         & \text { } X_4<21 \cdot 2^4 \text {,  } 216<336 \text {,  } X_3=216 ;                                    \\
+         & \text { } X_3 \geq 21 \cdot 2^3 \text {,  } 216 \geq 168 \text {,  } X_2=216-21 \cdot 2^3=48 \text {; } \\
+         & \text {  } X_2<21 \cdot 2^2 \text {,  } 48<84 \text {,  } X_1=48 ;                                      \\
+         & \text {  } X_1 \geq 21 \cdot 2^1 \text {,  } 48 \geq 42 \text {,  } X_0=48-21 \cdot 2^1=6 \text {; }    \\
+         & \text { } X_0<21 \cdot 2^0 \text {, } 6<21 \text {,  } R=6 \text {. }
+    \end{aligned}
+$$
+
+W pierwszym kroku porównujemy X z $21 \cdot 2^5$.
+Następnie odejmujemy $21 \cdot 2^5$ od X i otrzymujemy $X_4=216$.
+W kolejnym kroku porównujemy $X_4$ z $21 \cdot 2^4$ i otrzymujemy $X_3=216$.
+Następnie odejmujemy $21 \cdot 2^3$ od $X_3$ i otrzymujemy $X_3=48$.
+W kolejnym kroku porównujemy $X_2$ z $21 \cdot 2^2$ i otrzymujemy $X_1=48$.
+Następnie odejmujemy $21 \cdot 2^1$ od $X_1$ i otrzymujemy $X_0=6$.
+W kolejnym kroku porównujemy $X_0$ z $21 \cdot 2^0$ i otrzymujemy $R=6$.
+
+
+Jak widać powyżej jest to prosta operacja odejmowania i porównywania, która jest wykonywana w pętli.
+\subsubsection{Implementacja algorytmu}
+Algorytm został zaimplementowany za pomocą trzech funkcji.
+\begin{itemize}
+    \item \textbf{calc\_length} - oblicza długość binarną liczby `number` poprzez przesuwanie jej bitów w prawo i zliczanie ilości przejść, zwracając ostateczną długość.
+    \item \textbf{get\_delta} - funkcja obliczająca $\delta$ na podstawie parametrów l i P, sprawdzając warunek związanym z potęgami dwójki.
+    \item \textbf{mod\_bit\_by\_bit} - funkcja obliczająca resztę z dzielenia - w pętli obliczane są kolejne wartości X.
+          Jeżeli $X_i \geq P \cdot 2^i$, to $X_{i-1}=X_i-P \cdot 2^i$, w przeciwnym wypadku $X_{i-1}=X_i$.
+          Pętla kończy się, gdy wartość $\delta$ wynosi 0 ,a funkcja zwraca $R$ jako reszte z dzielenia.
+\end{itemize}
+\begin{thebibliography}{9}
+    \bibitem{texbook}
+\end{thebibliography}
+\end{document}
