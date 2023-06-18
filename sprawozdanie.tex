@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{graphicx}
 \usepackage[mathletters]{ucs}
-
+\usepackage{url}
 \usepackage{float}
 \usepackage[utf8x]{inputenc}
 \usepackage[polish]{babel}
@@ -31,11 +31,18 @@
 \newpage
 
 \section{Cele projektu}
-
-\section{Przebieg projektu}
-
+Celem projektu jest analiza oraz implementacja poszczególnych algorytmów związanych z arytmetyką modularną zaprezentowanych w artykule naukowym \textit{Efficient Hardware Operations for the Residue Number System by Boolean Minimization} autorstwa Dana Gorodecky i Tomera Villi. W ramach projektu zostaną zaimplementowane oraz wytłumaczone algorytmy:
+\begin{itemize}
+    \item Modulo dla dowolnych X i P - bit po bicie
+    \item Algorytm mnożenia modułowego
+\end{itemize}
+\section{Założenia projektu}
+Nasz projekt powinien skupiać się na implementacji oraz analizie algorytmów związanych z arytmetyką modularną. W ramach projektu powinny zostać zaimplementowane wcześniej wymienione algorytmy.
+Algorytmy implementowane będą w języku Python.
 \section{Algorytmy}
+Autorzy artykułu zaproponowali kilka algorytmów związanych z arytmetyką modularną. W ramach projektu skupiliśmy się na kilku z nich.
 \subsection{Modulo dla dowolnych X i P - bit po bicie}
+Algorytm ten pozwala na  $X(\bmod P)$ z dowolnych liczb. Jego głowna cechą jest to, że redukujemy liczbę X bit po bicie, aż dojdziemy do reszty z dzielenia.
 \subsubsection{Opis algorytmu}
 W artykule autorzy zaproponowali sposób obliczania oparty na następującej reprezentacji:
 \begin{align}
@@ -87,7 +94,65 @@ Algorytm został zaimplementowany za pomocą trzech funkcji.
           Jeżeli $X_i \geq P \cdot 2^i$, to $X_{i-1}=X_i-P \cdot 2^i$, w przeciwnym wypadku $X_{i-1}=X_i$.
           Pętla kończy się, gdy wartość $\delta$ wynosi 0 ,a funkcja zwraca $R$ jako reszte z dzielenia.
 \end{itemize}
+
+
+\subsection{Algorytm mnożenia modułowego}
+Algorytm ten pozwala na mnożenie liczb w systemie resztowym. Jego główną cechą jest to, że dzielimy liczby na subwektory, a następnie mnożymy je w sposób opisany poniżej.
+\subsubsection{Opis algorytmu}
+Autorzy artykułu zaproponowali algorytm mnożenia modułowego, który pozwala policzyć $A \cdot B=R(\bmod P)$, gdzie
+$A=\left(A_\delta, A_{\delta-1}, \ldots, A_1\right), B=\left(B_\delta, B_{\delta-1}, \ldots, B_1\right)$  $A_\delta$ oraz $B_\delta$  oznaczają najbardziej znaczące bity liczb A i B, a $\delta$ jest długością słow binarnych z których się składaja.
+Np. $A=13$ i $B=14$ to $A=\left(1, 1, 0, 1\right)$ i $B=\left(1, 1, 1, 0\right)$, a $\delta=2$ to $A_2 =\left(1, 1\right)$  oraz $B_2  =\left(1, 1\right)$. Staramy się dzielić liczby wejściowe na dwu, trzy lub czterobitowe  subwektory.
+Odpowiednie pary subwektorów mnożymy używając poniższego wzoru:
+$$
+    R=\sum_{i=1}^\delta \sum_{j=1}^\delta A_i \cdot B_j \cdot\left(2^{m-(i+j-2)-3}(\bmod P)\right)=S_{-} \text {temp }
+$$
+
+$S_{temp}$ nie może przekraczać  $ 2^{3 \cdot \delta+2}$
+\newpage
+Przykład wykorzystania algorytmu:
+
+
+Wybieramy dwie 6-bitowe liczby $A=45$ and $B=15$ oraz $P=47$. Dzielimy je na 3-bitowe subwectory. Oznacz to, że $\delta = 2$
+\\
+$A_1=\left(1, 0, 1\right) = 5$
+$B_1=\left(1,1,1\right) = 7$
+$A_2=\left(1, 0, 1\right) = 7$
+$B_2=\left(1\right) = 1$
+$A \cdot B=S(\bmod 47)$\\
+
+$S_{temp} = A_1 \cdot B_1(\bmod 47)+A_1 \cdot B_2 \cdot 2^3(\bmod 47)+A_2 \cdot B_1 \cdot 2^3(\bmod 47)+$ $A_2 \cdot B_2 \cdot 2^6(\bmod 47) =5 \cdot 7(\bmod 47)+$ $5 \cdot 1 \cdot 2^3(\bmod 47)+5 \cdot 7 \cdot 2^3(\bmod 47)+5 \cdot 1 \cdot 2^6(\bmod 47)=35(\bmod 47)+40(\bmod 47)+$ $45(\bmod 47)+38(\bmod 47)=158$
+\\
+
+
+$158 >= 2^{3 \cdot 2+2} = 128$, co oznacza, że musimy wykonać kolejna iteracje aby zmniejszyć $S_{temp}$.
+\\
+
+
+$S_{temp} = 158 = \left(1,0,0,1,1,1,1,0\right)$
+\\
+
+$S_{temp1} = \left(1,1,0 \right)$
+$S_{temp2} = \left(0,1,1 \right)$
+$S_{temp3} = \left(1,0 \right)$
+\\
+
+$S_{temp} =6+3 \cdot 2^3(\bmod 47)+2 \cdot 2^6(\bmod 47)=6+24+34=64$.
+\\
+
+$64 <=  128$, więc
+
+$S(\bmod 47) = 64(\bmod 47) = 17$
+
+
+\subsubsection{Implementacja algorytmu}
+
+
+\section{Wnioski}
+bla bla bla
 \begin{thebibliography}{9}
     \bibitem{texbook}
+    D. Gorodecky and T. Villa, ”Efficient Hardware Operations for the Residue Number
+    System by Boolean Minimization”, Advanced Boolean Techniques, Minsk, Belarus,
+    January, 2020, p. 237-258
 \end{thebibliography}
 \end{document}

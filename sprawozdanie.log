@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.6.1)  18 JUN 2023 18:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.6.1)  19 JUN 2023 01:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -49,6 +49,9 @@ File: uni-global.def 2013/05/13 UCS: Unicode global data
 \uc@combtoks=\toks15
 \uc@combtoksb=\toks16
 \uc@temptokena=\toks17
+) (/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip16
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 ) (/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count176
@@ -143,7 +146,7 @@ LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
 \macc@depth=\count185
 \c@MaxMatrixCols=\count186
-\dotsspace@=\muskip16
+\dotsspace@=\muskip17
 \c@parentequation=\count187
 \dspbrk@lvl=\count188
 \tag@help=\toks25
@@ -251,20 +254,55 @@ File: uni-1.def 2013/05/13 UCS: Unicode data U+0100..U+01FF
 
  [1] (/usr/share/texlive/texmf-dist/tex/latex/ucs/data/uni-0.def
 File: uni-0.def 2013/05/13 UCS: Unicode data U+0000..U+00FF
-) [2] [3] (./sprawozdanie.aux) ) 
+) [2] [3]
+Overfull \hbox (56.23608pt too wide) in paragraph at lines 102--106
+\T1/cmr/m/n/10.95 zwala po-li-czy¢ $\OML/cmm/m/it/10.95 A \OMS/cmsy/m/n/10.95 ^^A \OML/cmm/m/it/10.95 B \OT1/cmr/m/n/10.95 = \OML/cmm/m/it/10.95 R\OT1/cmr/m/n/10.95 ( [] \OML/cmm/m/it/10.95 P\OT1/cmr/m/n/10.95 )$\T1/cmr/m/n/10.95 , gdzie $\OML/cmm/m/it/10.95 A \OT1/cmr/m/n/10.95 = [] \OML/cmm/m/it/10.95 ; B \OT1/cmr/m/n/10.95 = []$
+ []
+
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 115--122
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 123--125
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 127--129
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 131--133
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 134--138
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 139--141
+
+ []
+
+[5] (./sprawozdanie.aux) ) 
 Here is how much of TeX's memory you used:
- 5241 strings out of 483034
- 68331 string characters out of 5962820
- 315494 words of memory out of 5000000
- 20187 multiletter control sequences out of 15000+600000
- 543807 words of font info for 47 fonts, out of 8000000 for 9000
+ 5315 strings out of 483034
+ 69236 string characters out of 5962820
+ 316625 words of memory out of 5000000
+ 20256 multiletter control sequences out of 15000+600000
+ 544496 words of font info for 48 fonts, out of 8000000 for 9000
  101 hyphenation exceptions out of 8191
- 34i,9n,29p,341b,632s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm2074.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on sprawozdanie.pdf (4 pages, 148179 bytes).
+ 34i,9n,33p,511b,632s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1095.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1440.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm2074.600pk> </home/pjury/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on sprawozdanie.pdf (6 pages, 183631 bytes).
 PDF statistics:
- 290 PDF objects out of 1000 (max. 8388607)
- 57 compressed objects within 1 object stream
+ 366 PDF objects out of 1000 (max. 8388607)
+ 68 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
