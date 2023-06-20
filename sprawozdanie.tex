@@ -10,6 +10,7 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{amsmath}
+\usepackage{pythonhighlight}
 \renewcommand\*{\cdot}
 \setcounter{secnumdepth}{4}
 \titleformat{\paragraph}
@@ -145,14 +146,180 @@ $S(\bmod 47) = 64(\bmod 47) = 17$
 
 
 \subsubsection{Implementacja algorytmu}
-
+Algorytm został zaimplementowany za pomoc¡ pięciu funkcji.
+\begin{itemize}
+    \item \textbf{getBitCount} - oblicza długość binarną liczby `X` poprzez przesuwanie jej bitów w prawo i zliczanie ilości przejść, zwracając ostateczną długość.
+    \item \textbf{createSubvectors} - funkcja dzieli liczbę `X` na subwektory o długości `subvectorBitCount` i zwraca listę subwektorów.
+    \item  \textbf{printSubvectors} - funkcja wypisuje subwektory z listy `subvectors`.
+    \item \textbf{subvectorToDec} - funkcja zamienia subwektor na liczbę dziesiętną.
+    \item   \textbf{getMultResult} - funkcja oblicza $A \cdot B(\bmod P)$, gdzie $A$ i $B$ są liczbami dziesiętnymi, a $P$ jest liczbą modulo.
+\end{itemize}
 
 \section{Wnioski}
-bla bla bla
+Artykuł naukowy skupiał się na kilku sposobach rozwiązania problemu obliczenia modulo z dużej liczby.
+Opisane przez nas algorytmy są tylko częscią z nich.
+Pierwszy algorytm stosował podejście bit po bice, a drugi dzielił liczby na subwektory.
+Podczas implementacji algorytmów w języku Python napotkaliśmy na kilka problemów, które zgrabnie rozwikłaliśmy.
 \begin{thebibliography}{9}
     \bibitem{texbook}
     D. Gorodecky and T. Villa, ”Efficient Hardware Operations for the Residue Number
     System by Boolean Minimization”, Advanced Boolean Techniques, Minsk, Belarus,
     January, 2020, p. 237-258
 \end{thebibliography}
+
+\newpage
+\section{Kod źródłowy}
+\subsection{bit\_by\_bit.py}
+\begin{python}
+    import math
+
+
+    def calc_length(number):
+    length = 0
+    while number != 0:
+    number >>= 1
+    length += 1
+    return length
+
+
+    def get_delta(l, P):
+    delta = 0
+    while P * math.pow(2, delta) < math.pow(2, l) - 1:
+    delta += 1
+    return delta
+
+
+    def mod_bit_by_bit(X, P, delta):
+    while delta >= 0:
+    if X >= P * math.pow(2, delta):
+    X -= P * math.pow(2, delta)
+    print("X" + str(delta) + " : ", X)
+    delta -= 1
+    return X
+
+
+    def bit_by_bit(X, P):
+    l = calc_length(X)
+    delta = get_delta(l, P)
+    R = mod_bit_by_bit(X, P, delta)
+    print("Ilosc bitow: ", l)
+    print("Ile iteracji: ", delta)
+    print("Reszta: ", R)
+
+
+    if __name__ == "__main__":
+    X = 888
+    P = 21
+    bit_by_bit(X, P)
+\end{python}
+\newpage
+\subsection{modular\_multiplication.py}
+
+
+\begin{python}
+
+    import math
+
+
+    def getBitCount(X):
+    if X == 0:
+    return 1
+
+    count = 0
+    while X > 0:
+
+    count += 1
+    X >>= 1
+    return count
+
+
+    def createSubvectors(X, subvectorBitCount, subvectorCount):
+
+    subvectors = []
+    for _ in range(subvectorCount):
+    subvector = [0] * subvectorBitCount
+    subvectors.append(subvector)
+
+    for i in range(subvectorCount):
+    for j in range(subvectorBitCount - 1, -1, -1):
+    subvectors[i][j] = X % 2
+    X //= 2
+    return subvectors
+
+
+    def printSubvectors(subvectors):
+
+    for subvector in subvectors:
+    print("[ ", end="")
+    for bit in subvector:
+    print(bit, end=" ")
+    print("]", end=" ")
+    print()
+
+
+    def subvectorToDec(subvector):
+
+    dec = 0
+    for i in range(len(subvector)):
+    dec += subvector[i] * int(math.pow(2, len(subvector) - i - 1))
+    return dec
+
+
+    def getMultResult(A, B, P):
+
+    bitsOfbiggerNumber = getBitCount(max(A, B))
+    subvectorBitCount = 3  # r
+    subvectorCount = math.ceil(bitsOfbiggerNumber / subvectorBitCount)  # delta
+    print(bitsOfbiggerNumber, subvectorBitCount)
+
+    subvectorsA = createSubvectors(A, subvectorBitCount, subvectorCount)
+    printSubvectors(subvectorsA)
+
+    subvectorsB = createSubvectors(B, subvectorBitCount, subvectorCount)
+    printSubvectors(subvectorsB)
+
+    result = 0
+
+    for i in range(len(subvectorsA)):
+    for j in range(len(subvectorsB)):
+
+    A_iter = subvectorToDec(subvectorsA[i])
+    B_iter = subvectorToDec(subvectorsB[j])
+
+    S_temp = A_iter * B_iter * int(math.pow(2,
+    ((i + 1) + (j + 1) - 2) * subvectorBitCount)) % P
+
+    result += S_temp
+
+    print(result)
+
+    range_ = int(math.pow(2, 3 * subvectorCount + subvectorCount))
+
+    rangeBitCount = getBitCount(range_)
+    resultSubvectorCount = math.ceil(rangeBitCount / subvectorBitCount)
+    resultSubvectors = createSubvectors(result, subvectorBitCount,
+    resultSubvectorCount)
+    printSubvectors(resultSubvectors)
+
+    power = 0
+    ans = 0
+    for i in range(subvectorCount + 1):
+    ans_temp = subvectorToDec(
+    resultSubvectors[i]) * int(math.pow(2, power)) % P
+    power += subvectorBitCount
+    ans += ans_temp
+    if ans > P:
+    ans -= P
+    print(ans)
+
+
+    A = 45
+    B = 15
+    P = 47
+
+    getMultResult(A, B, P)
+
+
+\end{python}
+
 \end{document}

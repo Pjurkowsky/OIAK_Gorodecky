@@ -7,7 +7,6 @@ def getBitCount(X):
 
     count = 0
     while X > 0:
-
         count += 1
         X >>= 1
     return count

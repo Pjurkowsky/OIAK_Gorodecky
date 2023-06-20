@@ -8,4 +8,7 @@
 \contentsline {subsection}{\numberline {3.2}Algorytm mno\IeC {\.z}enia modu\IeC {\l }owego}{4}%
 \contentsline {subsubsection}{\numberline {3.2.1}Opis algorytmu}{4}%
 \contentsline {subsubsection}{\numberline {3.2.2}Implementacja algorytmu}{5}%
-\contentsline {section}{\numberline {4}Wnioski}{5}%
+\contentsline {section}{\numberline {4}Wnioski}{6}%
+\contentsline {section}{\numberline {5}Kod \IeC {\'z}r\IeC {\'o}d\IeC {\l }owy}{7}%
+\contentsline {subsection}{\numberline {5.1}bit\_by\_bit.py}{7}%
+\contentsline {subsection}{\numberline {5.2}modular\_multiplication.py}{8}%
