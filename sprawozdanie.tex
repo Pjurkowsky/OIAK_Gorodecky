@@ -11,6 +11,7 @@
 \usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{pythonhighlight}
+
 \renewcommand\*{\cdot}
 \setcounter{secnumdepth}{4}
 \titleformat{\paragraph}
@@ -148,23 +149,82 @@ $S(\bmod 47) = 64(\bmod 47) = 17$
 \subsubsection{Implementacja algorytmu}
 Algorytm został zaimplementowany za pomoc¡ pięciu funkcji.
 \begin{itemize}
-    \item \textbf{getBitCount} - oblicza długość binarną liczby `X` poprzez przesuwanie jej bitów w prawo i zliczanie ilości przejść, zwracając ostateczną długość.
-    \item \textbf{createSubvectors} - funkcja dzieli liczbę `X` na subwektory o długości `subvectorBitCount` i zwraca listę subwektorów.
-    \item  \textbf{printSubvectors} - funkcja wypisuje subwektory z listy `subvectors`.
-    \item \textbf{subvectorToDec} - funkcja zamienia subwektor na liczbę dziesiętną.
-    \item   \textbf{getMultResult} - funkcja oblicza $A \cdot B(\bmod P)$, gdzie $A$ i $B$ są liczbami dziesiętnymi, a $P$ jest liczbą modulo.
+    \item \textbf{bit\_counter} - oblicza długość binarną liczby `X` poprzez przesuwanie jej bitów w prawo i zliczanie ilości przejść, zwracając ostateczną długość.
+    \item \textbf{create\_binary\_subvector\_alg\_gorodecky} - tworzy podwektory dla danej liczby number. Przyjmuje trzy argumenty: number - liczba do podziału na podwektory, nrOfBits - liczba bitów w każdym podwektorze, nrOfSubvectors - liczba podwektorów do utworzenia. Tworzy listę podwektorów i przypisuje bity liczby number do odpowiednich podwektorów, zaczynając od najmniej znaczącego bitu.
+    \item \textbf{binary\_to\_dec} - konwertuje podwektor reprezentowany w postaci binarnej na liczbę dziesiętną.
+    \item \textbf{modulo\_multiplication} - funkcja oblicza $A \cdot B(\bmod P)$, gdzie $A$ i $B$ są liczbami dziesiętnymi, a $P$ jest liczbą modulo. Jeśli finalResult przekracza wartość P, wartość jest odpowiednio pomniejszana o `P`.
 \end{itemize}
 
+\section {Minimalizacja logiczna w operacjach modułowych}
+Minimalizacja logiczna w operacjach modułowych odnosi się do procesu uproszczenia i optymalizacji logicznej struktury modułów w systemach cyfrowych. Do optymalizacji wykorzystaliśmy program ABC oraz przykładowy kod od Ana Petkovska z Politechniki Federalnej w Lozannie.
+
+\subsection{Minimalizacja programu w ABC}
+Przeprowadzona minimalizacja:
+\begin{python}
+    damian@damian-laptop:~/ABC/abc/examples$ cat rca2.v
+        module rca2 (a0, b0, a1, b1, s0, s1, s2);
+        input a0, b0, a1, b1;
+        output s0, s1, s2;
+        wire c0;
+        assign s0 = a0 ^ b0 ;
+        assign c0 = a0 & b0 ;
+        assign s1 = a1 ^ b1 ^ c0;
+        assign s2 = (a1 & b1) | (c0 & (a1 ^ b1));
+        endmodule
+        damian@damian-laptop:~/ABC/abc/examples$ ../abc
+
+    UC Berkeley, ABC 1.01 (compiled Jun 20 2023 21:43:32)
+    abc 01> rca2.v
+    abc 02> read rca2.v
+    abc 03> strash
+    abc 04> print_stats
+    rca2                          : i/o =    4/    3  lat =    0  and =     13  lev =  4
+    abc 04>
+\end{python}
+\begin{itemize}
+    \item "i/o = 4/3": Wskazuje liczbę portów wejścia/wyjścia (i/o) modułu.
+    \item "lat = 0": Reprezentuje opóźnienie modułu, które odnosi się do liczby cykli zegara lub kroków czasowych wymaganych do wygenerowania przez moduł prawidłowych danych wyjściowych.
+    \item "and = 13": Wskazuje liczbę bramek AND używanych w module.
+    \item "lev = 4": Reprezentuje głębokość logiczną lub poziom modułu, który jest maksymalną liczbą opóźnień bramek wzdłuż dowolnej ścieżki od wejść do wyjść.
+\end{itemize}
+
+\subsection{Zmiana kodu autorów z obliczania modulo 47 na modulo 41}
+Udało nam się zmienić kod autorów artykułu z obliczania modulo 47 na modulo 41 oraz z liczby 100 bitowej na liczbę 25 bitową.
+Przetestowaliśmy to w kompilatorze online Veriloga.
+
+\subsection{Próba minimalizacji kodu autorów artykułu}
+Podjeliśmy próbe zminimalizowania obliczania modulo 41 liczby 25 bitowej. Niestety nie udało nam się tego dokonać. Ze względu na wyskakujący błąd.
+Problemem był błąd syntaxu, mimo że kod w kompilatorze online Veriloga działał poprawnie.
+\begin{python}
+    damian@damian-laptop:~/ABC/abc/examples$ ../abc
+    UC Berkeley, ABC 1.01 (compiled Jun 20 2023 21:43:32)
+    abc 01> read x_25_mod_41.v
+    x_25_mod_41.v (line 3): Cannot find closing bracket in this line.
+    abc: src/base/abc/abcObj.c:590: Abc_NtkFindOrCreateNet: Assertion `Abc_NtkIsNetlist(pNtk)' failed.
+    Aborted
+\end{python}
 \section{Wnioski}
 Artykuł naukowy skupiał się na kilku sposobach rozwiązania problemu obliczenia modulo z dużej liczby.
 Opisane przez nas algorytmy są tylko częscią z nich.
 Pierwszy algorytm stosował podejście bit po bice, a drugi dzielił liczby na subwektory.
 Podczas implementacji algorytmów w języku Python napotkaliśmy na kilka problemów, które zgrabnie rozwikłaliśmy.
+Algorytmy najpierw zostały przetestowane w sposób empiryczny tzn. na kartce papieru. Wyniki były tożsame z tymi, które obliczyły nasze pythonowe implementacje.
+
+
+Dodatkowo przetestowaliśmy program ABC, którego możemy wykorzystać do minimalizacji naszych układów pod różnymi postaciami. Do wyboru mamy wiele form, jednak nie daliśmy rady przetestować każdej ze względu na ich złożoność.
+Minimalizator logiczny ABC zawiera podobne zasady i techniki jak ESPRESSO.
+Celem jest zmniejszenie liczby bramek logicznych i optymalizacja projektu pod kątem takich czynników, jak obszar, zużycie energii i wydajność.  Chociaż ABC zapewnia możliwości minimalizacji logiki, takie jak ESPRESSO, jest to bardziej wszechstronne narzędzie, które zawiera dodatkowe funkcje do syntezy, weryfikacji i testowania obwodów cyfrowych. ABC oferuje szerszy zakres funkcji poza minimalizacją logiki, dzięki czemu jest wszechstronnym narzędziem do cyfrowego projektowania i optymalizacji.
+\newpage
 \begin{thebibliography}{9}
     \bibitem{texbook}
     D. Gorodecky and T. Villa, ”Efficient Hardware Operations for the Residue Number
     System by Boolean Minimization”, Advanced Boolean Techniques, Minsk, Belarus,
     January, 2020, p. 237-258
+    \bibitem{texbook} \url{https://en.wikipedia.org/wiki/Residue_number_system}
+    \bibitem{texbook} \url{https://www.tutorialspoint.com/compile_verilog_online.php}
+    \bibitem{} \url{https://pl.wikipedia.org/wiki/Verilog}
+    \bibitem{} \url{https://people.eecs.berkeley.edu/~alanmi/abc/}
+    \bibitem{} \url{https://www.dropbox.com/s/qrl9svlf0ylxy8p/ABC_GettingStarted.pdf}
 \end{thebibliography}
 
 \newpage
@@ -178,15 +238,7 @@ Podczas implementacji algorytmów w języku Python napotkaliśmy na kilka proble
     length = 0
     while number != 0:
     number >>= 1
-    length += 1
-    return length
-
-
-    def get_delta(l, P):
-    delta = 0
-    while P * math.pow(2, delta) < math.pow(2, l) - 1:
-    delta += 1
-    return delta
+    length += 123
 
 
     def mod_bit_by_bit(X, P, delta):
@@ -212,6 +264,8 @@ Podczas implementacji algorytmów w języku Python napotkaliśmy na kilka proble
     P = 21
     bit_by_bit(X, P)
 \end{python}
+
+
 \newpage
 \subsection{modular\_multiplication.py}
 
@@ -221,43 +275,33 @@ Podczas implementacji algorytmów w języku Python napotkaliśmy na kilka proble
     import math
 
 
-    def getBitCount(X):
-    if X == 0:
+    def bit_counter(number):
+    if number == 0:
     return 1
 
     count = 0
-    while X > 0:
+    while number > 0:
 
     count += 1
-    X >>= 1
+    number >>= 1
     return count
 
 
-    def createSubvectors(X, subvectorBitCount, subvectorCount):
+    def create_binary_subvector_alg_gorodecky(number, nrOfBits, nrOfSubvectors):
 
     subvectors = []
-    for _ in range(subvectorCount):
-    subvector = [0] * subvectorBitCount
+    for _ in range(nrOfSubvectors):
+    subvector = [0] * nrOfBits
     subvectors.append(subvector)
 
-    for i in range(subvectorCount):
-    for j in range(subvectorBitCount - 1, -1, -1):
-    subvectors[i][j] = X % 2
-    X //= 2
+    for i in range(nrOfSubvectors):
+    for j in range(nrOfBits - 1, -1, -1):
+    subvectors[i][j] = number % 2
+    number //= 2
     return subvectors
 
 
-    def printSubvectors(subvectors):
-
-    for subvector in subvectors:
-    print("[ ", end="")
-    for bit in subvector:
-    print(bit, end=" ")
-    print("]", end=" ")
-    print()
-
-
-    def subvectorToDec(subvector):
+    def binary_to_dec(subvector):
 
     dec = 0
     for i in range(len(subvector)):
@@ -265,61 +309,124 @@ Podczas implementacji algorytmów w języku Python napotkaliśmy na kilka proble
     return dec
 
 
-    def getMultResult(A, B, P):
+    def modulo_multiplication(A, B, P):
 
-    bitsOfbiggerNumber = getBitCount(max(A, B))
-    subvectorBitCount = 3  # r
-    subvectorCount = math.ceil(bitsOfbiggerNumber / subvectorBitCount)  # delta
-    print(bitsOfbiggerNumber, subvectorBitCount)
+    bitsOfbiggerNumber = bit_counter(max(A, B))
+    nrOfBits = 3  # r
+    nrOfSubvectors = math.ceil(bitsOfbiggerNumber / nrOfBits)  # delta
 
-    subvectorsA = createSubvectors(A, subvectorBitCount, subvectorCount)
-    printSubvectors(subvectorsA)
+    subvectorsA = create_binary_subvector_alg_gorodecky(
+    A, nrOfBits, nrOfSubvectors)
 
-    subvectorsB = createSubvectors(B, subvectorBitCount, subvectorCount)
-    printSubvectors(subvectorsB)
+    subvectorsB = create_binary_subvector_alg_gorodecky(
+    B, nrOfBits, nrOfSubvectors)
 
     result = 0
 
     for i in range(len(subvectorsA)):
     for j in range(len(subvectorsB)):
 
-    A_iter = subvectorToDec(subvectorsA[i])
-    B_iter = subvectorToDec(subvectorsB[j])
+    A_iter = binary_to_dec(subvectorsA[i])
+    B_iter = binary_to_dec(subvectorsB[j])
 
     S_temp = A_iter * B_iter * int(math.pow(2,
-    ((i + 1) + (j + 1) - 2) * subvectorBitCount)) % P
+    ((i + 1) + (j + 1) - 2) * nrOfBits)) % P
 
     result += S_temp
 
-    print(result)
+    range_ = int(math.pow(2, 3 * nrOfSubvectors + nrOfSubvectors))
 
-    range_ = int(math.pow(2, 3 * subvectorCount + subvectorCount))
-
-    rangeBitCount = getBitCount(range_)
-    resultSubvectorCount = math.ceil(rangeBitCount / subvectorBitCount)
-    resultSubvectors = createSubvectors(result, subvectorBitCount,
+    rangeBitCount = bit_counter(range_)
+    resultSubvectorCount = math.ceil(rangeBitCount / nrOfBits)
+    resultSubvectors = create_binary_subvector_alg_gorodecky(result, nrOfBits,
     resultSubvectorCount)
-    printSubvectors(resultSubvectors)
 
     power = 0
-    ans = 0
-    for i in range(subvectorCount + 1):
-    ans_temp = subvectorToDec(
+    finalResult = 0
+    for i in range(nrOfSubvectors + 1):
+    ans_temp = binary_to_dec(
     resultSubvectors[i]) * int(math.pow(2, power)) % P
-    power += subvectorBitCount
-    ans += ans_temp
-    if ans > P:
-    ans -= P
-    print(ans)
+    power += nrOfBits
+    finalResult += ans_temp
+    if finalResult > P:
+    finalResult -= P
+    print(finalResult)
 
 
-    A = 45
-    B = 15
-    P = 47
+    A = 35
+    B = 77
+    P = 53
 
-    getMultResult(A, B, P)
+    modulo_multiplication(A, B, P)
 
 
+
+\end{python}
+
+\newpage
+\subsection{Obliczanie modulo 41 liczby 25 bitowej - verilog}
+\begin{python}
+    module main(X, S);
+    input [24:0] X;
+    output [5:0] S;
+    wire [14:0] S_temp_1;
+    wire [11:0] S_temp_2;
+    wire [10:0] S_temp_3;
+    wire [9:0] S_temp_4;
+    wire [8:0] S_temp_5;
+    wire [7:0] S_temp_6;
+    wire [6:0] S_temp_7;
+    reg [5:0] S_temp;
+
+    assign S_temp_1 = X[5:0] + X[11:6] * 6'b101001 + X[17:12] * 6'b100011 + X[23:18] * 7'b1001001;
+    assign S_temp_2 = S_temp_1[5:0] + S_temp_1[13:6] * 6'b101001 + S_temp_1[14:14] * 6'b100011;
+    assign S_temp_3 = S_temp_2[5:0] + S_temp_2[11:6] * 6'b101001;
+    assign S_temp_4 = S_temp_3[5:0] + S_temp_3[10:6] * 6'b101001;
+    assign S_temp_5 = S_temp_4[5:0] + S_temp_4[9:6] * 6'b101001;
+    assign S_temp_6 = S_temp_5[5:0] + S_temp_5[8:6] * 6'b101001;
+    assign S_temp_7 = S_temp_6[5:0] + S_temp_6[7:6] * 6'b101001;
+
+    always @(S_temp_7) begin
+    if (S_temp_7 >= 6'b101001)
+    S_temp <= S_temp_7 - 6'b101001;
+    else
+    S_temp <= S_temp_7;
+    end
+
+    assign S = S_temp;
+    endmodule
+
+    module testbench;
+    reg [24:0] X;
+    wire [5:0] S;
+    main dut(.X(X), .S(S));
+
+    initial begin
+    X = 42;
+    #10;
+    $display("S = %d", S);
+    $finish;
+    end
+    endmodule
+
+\end{python}
+
+
+\subsection{Kod minimalizowany w ABC}
+\begin{python}
+    module rca2 (a0, b0, a1, b1, s0, s1, s2);
+    //-------------Input Ports Declarations-----------------------------
+    input a0, b0, a1, b1;
+    //-------------Output Ports Declarations-----------------------------
+    output s0, s1, s2;
+    //-------------Wires-----------------------------------------------
+    wire c0;
+    //-------------Logic-----------------------------------------------
+    assign s0 = a0 ^ b0 ;
+    assign c0 = a0 & b0 ;
+    assign s1 = a1 ^ b1 ^ c0;
+    assign s2 = (a1 & b1) | (c0 & (a1 ^ b1));
+    endmodule
 \end{python}
 
 \end{document}
